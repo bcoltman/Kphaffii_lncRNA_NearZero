@@ -1,0 +1,16 @@
+##gff-version 3
+crispra_plasmid	.	gene	1800	6011	.	+	.	ID=dCAS9(3xFLAG_SV40NLS)
+crispra_plasmid	.	mRNA	1800	6011	.	+	.	ID=dCAS9(3xFLAG_SV40NLS).t01;Parent=dCAS9(3xFLAG_SV40NLS);locus_tag=dCAS9(3xFLAG_SV40NLS)
+crispra_plasmid	.	exon	1800	6011	.	+	.	ID=exon-1;Parent=dCAS9(3xFLAG_SV40NLS).t01;locus_tag=dCAS9(3xFLAG_SV40NLS)
+crispra_plasmid	.	CDS	1800	6011	.	+	0	ID=dCAS9(3xFLAG_SV40NLS).p01;Parent=dCAS9(3xFLAG_SV40NLS).t01
+crispra_plasmid	.	gene	7196	7789	.	+	.	ID=MS2_VP64;
+crispra_plasmid	.	mRNA	7196	7789	.	+	.	ID=MS2_VP64.t01;Parent=MS2_VP64;locus_tag=MS2_VP64
+crispra_plasmid	.	exon	7196	7789	.	+	.	ID=exon-1;Parent=MS2_VP64.t01;locus_tag=MS2_VP64
+crispra_plasmid	.	CDS	7196	7789	.	+	0	ID=MS2_VP64.p01;Parent=MS2_VP64.t01
+crispra_plasmid	.	gene	8463	8713	.	+	.	ID=scgRNA_variable
+crispra_plasmid	.	mRNA	8463	8713	.	+	.	ID=scgRNA_variable.t01;Parent=scgRNA_variable;locus_tag=scgRNA_variable
+crispra_plasmid	.	exon	8463	8713	.	+	.	ID=exon-1;Parent=scgRNA_variable.t01;locus_tag=scgRNA_variable
+crispra_plasmid	.	gene	9559	10133	.	+	.	ID=nat1
+crispra_plasmid	.	mRNA	9559	10133	.	+	.	ID=nat1.t01;Parent=nat1;locus_tag=nat1
+crispra_plasmid	.	exon	9559	10133	.	+	.	ID=exon-1;Parent=nat1.t01;locus_tag=nat1
+crispra_plasmid	.	CDS	9559	10133	.	+	0	ID=nat1.p01;Parent=nat1.t01

@@ -1,0 +1,9 @@
+##gff-version 3
+vhh_plasmid	.	gene	1674	2765	.	+	.	ID=alphaMF-vHH-VTU
+vhh_plasmid	.	mRNA	1674	2765	.	+	.	ID=alphaMF-vHH-VTU.t01;Parent=alphaMF-vHH-VTU;locus_tag=alphaMF-vHH-VTU
+vhh_plasmid	.	exon	1674	2765	.	+	.	ID=exon-1;Parent=alphaMF-vHH-VTU.t01;locus_tag=alphaMF-vHH-VTU
+vhh_plasmid	.	CDS	1674	2765	.	+	0	ID=alphaMF-vHH-VTU.p01;Parent=alphaMF-vHH-VTU.t01
+vhh_plasmid	.	gene	3547	3920	.	+	.	ID=ZeoR
+vhh_plasmid	.	mRNA	3547	3920	.	+	.	ID=ZeoR.t01;Parent=ZeoR;locus_tag=ZeoR
+vhh_plasmid	.	exon	3547	3920	.	+	.	ID=exon-1;Parent=ZeoR.t01;locus_tag=ZeoR
+vhh_plasmid	.	CDS	3547	3920	.	+	0	ID=ZeoR.p01;Parent=ZeoR.t01
