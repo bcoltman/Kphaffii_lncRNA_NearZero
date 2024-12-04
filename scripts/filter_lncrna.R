@@ -42,7 +42,7 @@ write("---------------FEELNC-------------------", stdout())
 write(paste(length(feelnc_lncrna_transcripts), "candidate lncRNAs identified by FEELNc"), stdout())
 
 # Load coding potential data from CPC2, CPAT, and RNAsamba
-cpc2 <- subset(read.table(cpc_output, sep = "\t"), V8 == "noncoding")$V1
+cpc2_lncrna_transcripts <- subset(read.table(cpc_output, sep = "\t"), V8 == "noncoding")$V1
 write(paste(length(cpc2_lncrna_transcripts), "CPC2 Candidates"),stdout())
 
 
@@ -86,6 +86,7 @@ if (file.exists(swissprot_blast_output)) {
   swissprot_hits <- unique(substr(read.table(swissprot_blast_output, sep = "\t")$V1, 1, nchar(swissprot_blast_output) - 3))
   lncrna_all_noncoding <- lncrna_all_noncoding[!(lncrna_all_noncoding %in% swissprot_hits)]
 }
+write(paste(length(swissprot_hits), "SWISSPROT hits"), stdout())
 write(paste(length(lncrna_all_noncoding), "remaining after SWISSPROT filtering"), stdout())
 
 # PFAM
@@ -93,31 +94,26 @@ if (file.exists(pfam_domain_hit_output)) {
   pfam_hits <- unique(read.table(pfam_domain_hit_output)$V1)
   lncrna_all_noncoding <- lncrna_all_noncoding[!(lncrna_all_noncoding %in% pfam_hits)]
 }
+write(paste(length(pfam_hits), "PFAM hits"), stdout())
 write(paste(length(lncrna_all_noncoding), "remaining after PFAM domain filtering"), stdout())
 
 # RNAcentral and RFAM filtering
 if (file.exists(rna_central_output)) {
   rna_central_hits <- unique(read.table(rna_central_output, sep = "\t", header = TRUE)$Transcript)
-  lncrna_all_noncoding <- lncrna_all_noncoding[!(lncrna_all_noncoding %in% rna_central_hits)]
+  #lncrna_all_noncoding <- lncrna_all_noncoding[!(lncrna_all_noncoding %in% rna_central_hits)]
 }
+write(paste(length(rna_central_hits), "RNAcentral hits"), stdout())
 write(paste(length(lncrna_all_noncoding), "remaining after RNA central filtering"), stdout())
 
 if (file.exists(rfam_rna_central_output)) {
   rfam_hits <- unique(read.table(rfam_rna_central_output, sep = "\t", header = TRUE)$Transcript)
   lncrna_all_noncoding <- lncrna_all_noncoding[!(lncrna_all_noncoding %in% rfam_hits)]
 }
+write(paste(length(rfam_hits), "RFAM hits"), stdout())
 write(paste(length(lncrna_all_noncoding), "remaining after RFAM-RNA central filtering"), stdout())
 
 
 write("---------------lncRNA - RNA Central-------------------", stdout())
-
-# Filter results using RFAM-lncRNA sequences
-if (file.exists(rfam_lncrna_blast_output)) {
-  rfam_hits <- unique(read.table(rfam_lncrna_blast_output, sep = "\t")$V1)
-  write(paste(length(rfam_hits), "annotated with RFAM lncRNA models"), stdout())
-} else {
-  write("No RFAM lncRNA models found", stdout())
-}
 
 
 # TPM filter

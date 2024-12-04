@@ -173,8 +173,8 @@ def main():
 #				else:
 #					print("Failed to submit job. Record that failed:\n {} \n {}".format(description, sequence))
 #			submission_df = pd.concat([submission_df, pd.DataFrame.from_dict([{"JobID":job_id, "Description":description, "Sequence":str(sequence)}])])
-#
-#
+
+
 #	submission_df.to_csv(f"{directory}/RNACentralJobs.tsv", sep = "\t", index=False)
 	submission_df = pd.read_csv(f"{directory}/RNACentralJobs.tsv", sep = "\t")
 
@@ -193,7 +193,8 @@ def main():
 							"Source":hit["source"], 
 							"RNA_type":hit["fields"]["rna_type"], 
 							"Organism":hit["fields"]["standard_name"], 
-"Query Coverage":hit["query_coverage"], "Target Coverage":hit["target_coverage"],
+							"Query Coverage":hit["query_coverage"], 
+							"Target Coverage":hit["target_coverage"],
 							"E-value":hit["e_value"], 
 							"Score":hit["score"], 
 							"Identity":hit["identity"], 
@@ -214,7 +215,7 @@ def main():
 		print(f"Done - {description}")
 
 
-	sequence_df.to_csv(f"{directory}/RNACentralAll.tsv", sep = "\t", index=False)
+	sequence_df.loc[(sequence_df["E-value"] < 1e-2)&(sequence_df["Query Coverage"] > 50),:].to_csv(f"{directory}/RNACentralAll.tsv", sep = "\t", index=False)
 	rfam_df.to_csv(f"{directory}/Rfam_FamiliesAll.tsv", sep = "\t", index=False)
 	
 	sequence_df.loc[(sequence_df["E-value"] < e_value)&(sequence_df["Identity"] > percent_identity),:].to_csv(f"{directory}/RNACentral.tsv", sep = "\t", index=False)

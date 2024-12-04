@@ -49,9 +49,9 @@ interacting_pairs <- args[9]
 neighbouring_pairs <- args[10]
 func_dir <- args[11]
 
-dir.create(file.path(de_dir, "/volcano"),recursive=TRUE)
+
 dir.create(file.path(de_dir, "/heatmaps"),recursive=TRUE)
-dir.create(file.path(de_dir, "/PCA"),recursive=TRUE)
+
 
 dir.create(file.path(func_dir, "/clustering/mfuzz"),recursive=TRUE)
 dir.create(file.path(func_dir, "/clustering/mpln"),recursive=TRUE)
@@ -363,6 +363,8 @@ suppressMessages(lncrna_genes_all <- AnnotationDbi::select(stringtie_txdb,
 
 # lncrna genes
 lncrna_genes <- lncrna_genes_all[!is.na(lncrna_genes_all$GENEID), ]$GENEID
+lncrna_genes <- unique(lncrna_genes)
+
 
 # add the FEELnc classifiation for lncRNA type
 lncRNA_classification <- read.csv(lncrna_classification, 
@@ -528,7 +530,8 @@ volcano_data_list <- process_comparison(desired_comparisons, comparison_interpre
 
 # Combine volcano data for global axis limits
 all_volcano_data <- do.call(rbind, volcano_data_list)
-global_x_limits <- c(-max(abs(all_volcano_data$log2FoldChange)), max(abs(all_volcano_data$log2FoldChange)))
+global_x_limits <- c(-max(abs(all_volcano_data$log2FoldChange), na.rm=TRUE), max(abs(all_volcano_data$log2FoldChange), na.rm=TRUE))
+
 # global_y_limits <- c(0, max(-log10(all_volcano_data$padj), na.rm = TRUE))
 global_y_limits <- c(0, max(-log10(all_volcano_data$svalue), na.rm = TRUE))
 
@@ -617,8 +620,6 @@ print(length(lncrna_genes))
 
 print("x of them are DE")
 print(length(lncrna_genes[lncrna_genes %in% DE_genes]))
-
-
 
 
 # Use the function with the original counts matrix
@@ -958,7 +959,7 @@ saveWorkbook(output_wb, file =paste0(func_dir, "/clustering/mfuzz/fuzzy_cluster_
 mplnResults <- mplnVariational(dataset=counts_median_matrix, 
 				membership="none", 
 				gmin=1, gmax=20, 
-				initMethod="kmeans", #random", 
+				initMethod="kmeans", 
 				nInitIterations=3, 
 				normalize="Yes")
 save(mplnResults, file=paste0(func_dir, "/clustering/mpln/sig_mplnResults.RData"))
@@ -985,10 +986,10 @@ print(summary(warnings()))
 # Process MPLN Clust results
 #########################
 
-
+# Can load the earlier ran!
 #load(file=paste0(func_dir, "clustering/mpln/sig_mplnResults.RData"))
 
-opt_clusters <- 4
+opt_clusters <- 7
 
 
 clusters <- data.frame(ID=rownames(mplnResults$dataset),Cluster=mplnResults$allResults[[opt_clusters]]$clusterlabels)
@@ -1117,7 +1118,7 @@ MPLNVisuals <- VisualizeLine(dataset = mplnResults$dataset,
 	fileName = '/Line',
 	output_dir=paste0(func_dir, "/clustering/mpln"))
 
-setwd(paste0(func_dir,"/mpln/"))
+setwd(paste0(func_dir,"/clustering/mpln/"))
 
 mplnViz <- mplnVisualizeBar(vectorObservations=1:nrow(mplnResults$dataset), 
 			probabilities=mplnResults$allResults[[opt_clusters]]$probaPost,

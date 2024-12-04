@@ -7,7 +7,7 @@ import json
 todf = []
 
 cbs7435_gs155 = pd.read_csv("data/cbs7435_gs115.tsv", sep="\t", header=None, index_col=[1])
-kegg = json.load(open('reference_genome/GO_analysis/kp_kegg.json'))
+kegg = json.load(open('data/kp_kegg.json'))
 
 for main in kegg['children']:
     for broad in main['children']:

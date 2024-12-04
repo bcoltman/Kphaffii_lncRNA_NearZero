@@ -8,21 +8,17 @@
 if (($# == 0)); then
         echo "Usage:"
         echo "-s = SWISSPROT BLAST output dir"
-        echo "-r = RNA central dir"
         echo "-e = E-Value threshold"
-        echo "-n = FEELNc lncRNA nucleotide sequence"
         echo "-p = protein sequence"
         echo "-t = Processor numbers"
         exit 2
 fi
-while getopts r:s:e:p:n:s:t: option
+while getopts s:e:p:s:t: option
   do
     case "${option}"
       in
-      r) RNACENTRAL_DIR=${OPTARG};;
       e) EVALUE=${OPTARG};;
       p) PROTEIN=${OPTARG};;
-      n) NUCLEOTIDE=${OPTARG};;
       s) SWISSPROT_OUTDIR=${OPTARG};;
       t) THREADS=${OPTARG};;
     esac
@@ -57,13 +53,7 @@ blastp \
 -num_threads $THREADS \
 > $SWISSPROT_OUTDIR/blastp.outfmt6
 
-echo "Search RNAcentral.py "
-
-#python scripts/search_RNAcentral_fromfile.py $RNACENTRAL_DIR 1e-5 90
-python scripts/search_RNAcentral.py $NUCLEOTIDE $RNACENTRAL_DIR $EVALUE 90
-
 echo "----------------------"
 echo "BLAST steps complete"
 echo "----------------------"
 echo "protein BLAST output written to $SWISSPROT_OUTDIR/blastp.outfmt6"
-echo "RNA central output written to $RNACENTRAL_DIR"

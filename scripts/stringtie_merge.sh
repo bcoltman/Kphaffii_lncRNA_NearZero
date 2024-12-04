@@ -114,7 +114,10 @@ gffcompare \
 -o $TRANSCRIPT_DIR/gffc_nc \
 -r $GFF  $TRANSCRIPT_DIR/non_protein_coding_stringtie.gtf
 
-
+gffcompare \
+-o testing_similar \
+-r transcriptome_assembly/individual_gtfs/SRR25915865.gtf SRR25915865.gtf
+$TRANSCRIPT_DIR/non_protein_coding_stringtie.gtf
 
 awk '
 BEGIN { FS="\t"; OFS="\t" }

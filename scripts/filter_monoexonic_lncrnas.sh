@@ -22,6 +22,8 @@ done
 # k) ENS_LNCRNA=${OPTARG};;
 # each lncrna is classified using FEELNc
 mkdir $OUT_DIR/classification
+mkdir $OUT_DIR/monoexonic_filter
+
 FEELnc_classifier.pl \
 	-i $LNCRNA_GTF \
 	-l $OUT_DIR/classification/FEELnc_1st_classification.log \
@@ -44,8 +46,6 @@ awk 'BEGIN { FS = OFS = "\t" }
 
 rm $OUT_DIR/classification/tmp_first_classification.txt
 
-#awk '{ if ($3 == "exon") print $0; }' lncrna_annotation/all_lncrna.gtf | grep -o "transcript_id [^;]\+;" | awk -v FS=" " '{ arr[substr($2, 2, length($2)-3)] += 1; } END { for (t in arr) { if (arr[t] > 1) { print t;} } }'
-
 
 sed 's/\s/\t/g' $LNCRNA_GTF | \
 	awk '$3 == "transcript"'| \
@@ -60,9 +60,8 @@ awk 'NR==FNR { filter[$1]; next } FNR==1 || $1 in filter' \
 	> $OUT_DIR/RNACentral/RNACentralAllFiltered.tsv
 
 
-
 # all monexonic
-mkdir $OUT_DIR/monoexonic_filter
+
 
 # determine which of the putative lncRNAs have 1 exon
 sed 's/\s/\t/g' $LNCRNA_GTF | \
@@ -86,15 +85,6 @@ sed 's/\s/\t/g' $LNCRNA_GTF | \
 	sort | \
 	uniq \
 	> $OUT_DIR/monoexonic_filter/multiexonic_lncrnas.txt
-
-# one exon lncRNAs are overlapped with the previous RFAM blast
-# determine monoexonic with hits in rfam, as well as synteny with human mouse
-# rfam blast hits
-#awk '{print $1}' $OUT_DIR/RFAM/lncrna.blastn.outfmt6 | sort > \
-#$OUT_DIR/monoexonic_filter/rfam_hit_transcripts.txt
-
-#comm -12 $OUT_DIR/monoexonic_filter/rfam_hit_transcripts.txt $OUT_DIR/monoexonic_filter/monoexonic_transcripts.txt >  \
-#$OUT_DIR/monoexonic_filter/rfam_monoexonic_lncrnas.txt
 
 
 # Filtering monoexonic two times, take transcripts that are antisense to protein_coding genes (i.e. 0bp) or transcripts that are more than 500bp away
@@ -132,38 +122,37 @@ comm -12 \
 	$OUT_DIR/monoexonic_filter/monoexonic_transcripts.txt > \
 	$OUT_DIR/monoexonic_filter/antisense_or_150_monoexonic_lncrnas.txt
 
-cat \
-	$OUT_DIR/monoexonic_filter/multiexonic_lncrnas.txt \
-	$OUT_DIR/monoexonic_filter/antisense_or_150_monoexonic_lncrnas.txt | \
-	sort| uniq > $OUT_DIR/monoexonic_filter/conservative_lncrna_list.txt
+#cat \
+#	$OUT_DIR/monoexonic_filter/multiexonic_lncrnas.txt \
+#	$OUT_DIR/monoexonic_filter/antisense_or_150_monoexonic_lncrnas.txt | \
+#	sort| uniq > $OUT_DIR/monoexonic_filter/conservative_lncrna_list.txt
 
-#$OUT_DIR/monoexonic_filter/rfam_monoexonic_lncrnas.txt \
 
-grep -wFf \
-	$OUT_DIR/monoexonic_filter/conservative_lncrna_list.txt \
-	$STR_GTF \
-	> $OUT_DIR/conservative_lncrna.gtf
+#grep -wFf \
+#	$OUT_DIR/monoexonic_filter/conservative_lncrna_list.txt \
+#	$STR_GTF \
+#	> $OUT_DIR/conservative_lncrna.gtf
 
 
 ## rerun classifer on final lncrna list
-FEELnc_classifier.pl \
-	-l $OUT_DIR/classification/FEELnc_conservative_classification.log \
-	-i $OUT_DIR/conservative_lncrna.gtf \
-	-a $REF_GTF \
-	> $OUT_DIR/classification/tmp_conservative_classification.txt
+#FEELnc_classifier.pl \
+#	-l $OUT_DIR/classification/FEELnc_conservative_classification.log \
+#	-i $OUT_DIR/conservative_lncrna.gtf \
+#	-a $REF_GTF \
+#	> $OUT_DIR/classification/tmp_conservative_classification.txt
 
 
 # Create the header
-header=$(head -1 "$OUT_DIR/classification/tmp_conservative_classification.txt")
+#header=$(head -1 "$OUT_DIR/classification/tmp_conservative_classification.txt")
 
 # Append the new column name to the header
-echo -e "${header}\tpartnerRNA_gene_name" > "$OUT_DIR/classification/conservative_classification.txt"
+#echo -e "${header}\tpartnerRNA_gene_name" > "$OUT_DIR/classification/conservative_classification.txt"
 
-awk 'BEGIN { FS = OFS = "\t" } 
-    FNR==NR { gene_name_map[$1] = $2; next } 
-    FNR==1 { next }  # Skip the header line of the second file
-    { gene_id = $4; gene_name = (gene_id in gene_name_map) ? gene_name_map[gene_id] : "NA"; print $0, gene_name }' \
-	$GENE_ID_NAME $OUT_DIR/classification/tmp_conservative_classification.txt \
-	>> $OUT_DIR/classification/conservative_classification.txt
+#awk 'BEGIN { FS = OFS = "\t" } 
+#    FNR==NR { gene_name_map[$1] = $2; next } 
+#    FNR==1 { next }  # Skip the header line of the second file
+#    { gene_id = $4; gene_name = (gene_id in gene_name_map) ? gene_name_map[gene_id] : "NA"; print $0, gene_name }' \
+#	$GENE_ID_NAME $OUT_DIR/classification/tmp_conservative_classification.txt \
+#	>> $OUT_DIR/classification/conservative_classification.txt
 
-rm $OUT_DIR/classification/tmp_conservative_classification.txt
+#rm $OUT_DIR/classification/tmp_conservative_classification.txt
