@@ -9,10 +9,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-Usage: python search.py [file] [database]
-Examles:
-python search.py file.fasta  # (search in the RNAcentral database)
-python search.py file.fasta mirbase
+
 """
 
 import json

@@ -3,8 +3,6 @@
 ##
 ## Script name: filter_lncrna.R
 ## Purpose: Filter FEELnc-identified lncRNA transcripts using multiple coding potential metrics
-## Author: Adapted script
-## Date Created: Dec-2020
 ##
 ## -----------------------------------------------------------------------------
 

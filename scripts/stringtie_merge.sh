@@ -28,13 +28,6 @@ done
 
 readlink -f $TRANSCRIPT_DIR/individual_gtfs/*.gtf > $TRANSCRIPT_DIR/mergelist.txt
 
-# introduced the -g which decides the gap_len between transcripts to merge
-#stringtie \
-#--merge $TRANSCRIPT_DIR/mergelist.txt \
-#-o $MGTF \
-#-G $GFF \
-#-f 0.1  \
-#-c 10 
 
 stringtie \
 --merge $TRANSCRIPT_DIR/mergelist.txt \

@@ -7,48 +7,6 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import numpy as np
 
-#with open(sys.argv[1], "r+") as gtf, open(sys.argv[2],"w") as output:
-#	for line in gtf:
-#		line=line.rstrip().split("\t")
-#		if line[2] == "transcript":
-#			#print line[-1]
-#			if ('class_code "x"' in line[-1]) or ('class_code "u"' in line[-1]):
-#				var="+"
-#				output.write("%s\n"%("\t".join(line)))
-#				#print line[-1]
-#			else:
-#				var="-"
-#		elif line[2]=="exon":
-#			if var=="+":
-#				#print "\t".join(line)
-#				output.write("%s\n"%("\t".join(line)))
-#
-
-#def generate_gc_content_data(output_file, input_file, class_code):
-	#concat_fasta="cat %s/lncRNA_prediction/%s_genes.fasta %s/lncRNA_prediction/%s_lncRNAs.fasta > %s/lncRNA_prediction/%s_genes_and_lncRNAs.fasta"%(spp,spp,spp,spp,spp,spp)
-	#subprocess.call(concat_fasta, shell=True)
-#	with open("%s"%(output_file),"w") as gc_output:
-#		for seq_record in SeqIO.parse("%s"%(input_file), "fasta"):
-#			name = str(seq_record.id)
-#			seq = str(seq_record.seq)
-#			seq=seq.upper()
-#			gc=float(seq.count("G") + seq.count("C")) / float(len(seq))
-			#if "|u|" in name:
-			#	class_code="u"
-			#elif "|x|" in name:
-			#	class_code="x"
-			#elif "intergenic" in name:
-			#	class_code="inter"
-			#else:
-			#	class_code="pc"
-			
-#			gc_output.write(f"{name}\t{class_code}\t{gc}\n")
-
-
-#generate_gc_content_data("lncrna_annotation/Intergenic_gc.tsv", "lncrna_annotation/data_fasta/intergenic_dna.fa","intergenic")
-#generate_gc_content_data("lncrna_annotation/Coding_gc.tsv", "lncrna_annotation/data_fasta/coding_cdna_test.fa", "coding")
-#generate_gc_content_data("lncrna_annotation/NonCoding_gc.tsv", "lncrna_annotation/data_fasta/non_coding_cdna_test.fa", "non-coding")
-
 
 def generate_gc_content_data(input_file, class_code):
 	df = []
@@ -76,19 +34,13 @@ int_gc = generate_gc_content_data(inter_fa,"intergenic")
 cod_gc = generate_gc_content_data(coding_fa, "coding")
 
 
-#lncrna_gc = generate_gc_content_data("lncrna_annotation/lncrna_sequences.fa", "lncRNA")
-#nc_gc = generate_gc_content_data("lncrna_annotation/data_fasta/non_coding_cdna_test.fa", "non-coding")
-#int_gc = generate_gc_content_data("lncrna_annotation/data_fasta/intergenic_dna.fa","intergenic")
-#cod_gc = generate_gc_content_data("lncrna_annotation/data_fasta/coding_cdna_test.fa", "coding")
-
 combined_gc = pd.concat([lncrna_gc, nc_gc, int_gc, cod_gc])
 combined_gc = combined_gc[combined_gc["GC"] != 0]
 combined_gc["logGC"] = np.log2(combined_gc["GC"].astype(float))
 
 fig, ax = plt.subplots(figsize= (12, 10))
 sns.boxplot(y='logGC', x='Type', data=combined_gc, ax=ax)
-#sns.swarmplot(y='Length', x='Type', hue='Type', data=combined, dodge=False, ax=ax)
-#sns.violinplot(y='Length', x='Type', hue='Type', data=combined, dodge=False, ax=ax)
+
 plt.tight_layout()
 fig.savefig(f"{outdir}/GCDistribution.png", dpi=300)
 
@@ -99,12 +51,9 @@ lncrnas = pd.read_csv(lncrna_list,header=None)[0].tolist()
 non_coding_genes = pd.read_csv(nc_list,header=None)[0].tolist()
 coding_genes = pd.read_csv(coding_list,header=None)[0].tolist()
 
-#lncrnas = pd.read_csv("lncrna_annotation/monoexonic_filter/first_lncrna_list.txt",header=None)[0].tolist()
-#non_coding_genes = pd.read_csv("reference_genome/other.noncoding.genes.txt",header=None)[0].tolist()
-#coding_genes = pd.read_csv("reference_genome/protein.coding.genes.txt",header=None)[0].tolist()
 
 bed_file = pd.read_csv(stringtie_bed,header=None,sep="\t")
-#bed_file = pd.read_csv("transcriptome_assembly/stringtie.all.transcripts.bed",header=None,sep="\t")
+
 bed_file = bed_file.iloc[:,:6]
 bed_file.columns = ["Chr","Start","End","TransID","Score","Strand"]
 
@@ -123,15 +72,14 @@ combined_len["LogLength"]=np.log2(combined_len["Length"])
 
 fig, ax = plt.subplots(figsize= (12, 10))
 sns.boxplot(y='LogLength', x='Type', data=combined_len, ax=ax)
-#sns.swarmplot(y='Length', x='Type', hue='Type', data=combined, dodge=False, ax=ax)
-#sns.violinplot(y='Length', x='Type', hue='Type', data=combined, dodge=False, ax=ax)
+
 plt.tight_layout()
 fig.savefig(f"{outdir}/LengthDistribution.png", dpi=300)
 
 ###################### Plot Expression
 
 TPM = pd.read_csv(transcript_tpm,sep="\t")
-#TPM = pd.read_csv("lncrna_annotation/TPM/transcript_tpm_all_samples.tsv",sep="\t")
+
 TPM = TPM.melt("Name")
 
 
@@ -153,8 +101,7 @@ combined_tpm["LogExpression"]=np.log2(combined_tpm["value"] +0.01)
 
 fig, ax = plt.subplots(figsize= (12, 5))
 sns.boxplot(y='LogExpression', x='Type', data=combined_tpm, ax=ax)
-#sns.swarmplot(y='Length', x='Type', hue='Type', data=combined, dodge=False, ax=ax)
-#sns.violinplot(y='Length', x='Type', hue='Type', data=combined, dodge=False, ax=ax)
+
 plt.tight_layout()
 fig.savefig(f"{outdir}/ExpressionDistribution.png", dpi=300)
 

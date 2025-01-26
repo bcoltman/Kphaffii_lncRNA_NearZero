@@ -1,18 +1,13 @@
 #!/usr/bin/Rscript
 ## -----------------------------------------------------------------------------
 ##
-## Script name: retentostat_deseq.r
+## Script name: deseq_analysis.R
 ##
 ## Purpose of script: To carry out count based differential expression analyis 
 ## for the full StringTie transcriptome assembly. Uses IsoformSwitchAnalyzeR to correct stringtie issues (merging etc).
 ## The differential expression results for  lncRNAs are parsed and the classififcaiton and orthology information is added 
 ##
-## -----------------------------------------------------------------------------
-##
-## Info: Genes differentially expressed with +/- 1.5 fold difference, along with a
-## BH adjusted p-value and baseMean >=100 are considered significant
-##
-## -----------------------------------------------------------------------------
+
 
 suppressMessages(library("IsoformSwitchAnalyzeR"))
 suppressMessages(library("DESeq2"))

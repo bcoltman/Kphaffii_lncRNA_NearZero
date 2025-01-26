@@ -1,8 +1,4 @@
 #!/usr/bin/env bash
-#### get the chinese hamster reference genome from ENSEMBL
-#### get additional annotations from NCBI
-#### inputs are: 1) output directory and 2) ensembl version
-#### Written by NIBRT: colin.clarke@nibrt.ie 12-2019
 
 while getopts o: option
   do
@@ -13,16 +9,11 @@ while getopts o: option
 done
 
 mkdir -p $GENOME_DIR/retentostat/
-#mkdir -p $GENOME_DIR/retentostat_reduced/
 
 # get reference genome - only using sequence
 NCBI_LOC=ftp.ncbi.nlm.nih.gov/genomes/all/GCA/000/223/565/GCA_000223565.1_PicPas_Mar2011/GCA_000223565.1_PicPas_Mar2011_assembly_structure/
 wget --accept fna.gz --no-parent --quiet --recursive --no-directories ftp://$NCBI_LOC -P reference_genome
 
-
-### Alternative is to use GRAZ ACIB ANNOTATION
-#NCBI_LOC=https://api.ncbi.nlm.nih.gov/datasets/v2alpha/genome/accession/GCA_900235035.2/download?include_annotation_type=GENOME_FASTA,GENOME_GFF,GENOME_GTF,RNA_FASTA,CDS_FASTA,PROT_FASTA,SEQUENCE_REPORT 
-#wget $NCBI_LOC -O reference_genome/GCA_900235035.2
 
 gunzip $GENOME_DIR/*.gz
 
@@ -58,18 +49,12 @@ samtools faidx $GENOME_DIR/${name}_combined.fa
 #cp data/cbs7435.gff3 $GENOME_DIR/${name}.gff3
 cp data/20240417_GFFCleanup/cbs7435_20240417_complete_temp_gffread.gff3 $GENOME_DIR/${name}.gff3
 
-#grep -P 'Hypothetical protein not conserved;' $GENOME_DIR/${name}.gff3| awk {'print $9'} | awk -F '[=;.]' '{print $2}' | uniq > $GENOME_DIR/hypothetical_not_conserved_genes.txt
-#grep -v -f $GENOME_DIR/hypothetical_not_conserved_genes.txt $GENOME_DIR/${name}.gff3  > $GENOME_DIR/${name}_reduced.gff3
 
 
-### 20240209 Edited to include the extra sequences for plasmids
 cat $GENOME_DIR/${name}_combined.fa data/additional_sequences/vhh_plasmid.fa > $GENOME_DIR/retentostat/${name}_retentostat_combined.fa
-#cat $GENOME_DIR/${name}_combined.fa data/additional_sequences/vhh_plasmid.fa > $GENOME_DIR/retentostat_reduced/${name}_retentostat_combined.fa
 
 
 tail -n+2 data/additional_sequences/vhh_plasmid.gff3 | cat $GENOME_DIR/${name}.gff3 - > $GENOME_DIR/retentostat/${name}_retentostat.gff3
-
-#tail -n+2 data/additional_sequences/vhh_plasmid.gff3 | cat $GENOME_DIR/${name}_reduced.gff3 - > $GENOME_DIR/retentostat_reduced/${name}_retentostat.gff3
 
 #list and gtf of ensembl protein coding genes
 
@@ -84,16 +69,13 @@ awk '$3 ~ /^(ncRNA|rRNA|snoRNA|tRNA|spliceosomalRNA|scpRNA|miRNA|Mt_rRNA|Mt_tRNA
 
 awk '$3 ~ /^(ncRNA|snoRNA|tRNA|spliceosomalRNA|scpRNA|miRNA|Mt_rRNA|Mt_tRNA|processed_pseudogene|pseudogene|ribozyme|scaRNA|snoRNA|snRNA|sRNA)$/' $GENOME_DIR/retentostat/${name}_retentostat.gff3 | awk {'print $9'} | awk -F '[=;.]' '{print $2}' | uniq > $GENOME_DIR/other.noncoding.no_rrna_genes.txt
  
-#grep -f $GENOME_DIR/other.noncoding.genes.txt $GENOME_DIR/retentostat/${name}_retentostat.gff3 > $GENOME_DIR/other_noncoding_genes.gff3 
+
 
 # No lincRNA in Pichia CBS7435 annotation
 
 gffread -w $GENOME_DIR/retentostat/${name}_retentostat_transcripts.fa \
 	-g $GENOME_DIR/retentostat/${name}_retentostat_combined.fa \
 	$GENOME_DIR/retentostat/${name}_retentostat.gff3
-#gffread -w $GENOME_DIR/retentostat_reduced/${name}_retentostat_transcripts.fa \
-#	-g $GENOME_DIR/retentostat_reduced/${name}_retentostat_combined.fa \
-#	$GENOME_DIR/retentostat_reduced/${name}_retentostat.gff3
 
 
 # END

@@ -1,5 +1,4 @@
 #!/usr/bin/env bash
-## anotation of lncRNAs via RFAM blast and syntheny with human and mouse
 
 if (($# == 0)); then
         echo "Usage:"
@@ -122,37 +121,3 @@ comm -12 \
 	$OUT_DIR/monoexonic_filter/monoexonic_transcripts.txt > \
 	$OUT_DIR/monoexonic_filter/antisense_or_150_monoexonic_lncrnas.txt
 
-#cat \
-#	$OUT_DIR/monoexonic_filter/multiexonic_lncrnas.txt \
-#	$OUT_DIR/monoexonic_filter/antisense_or_150_monoexonic_lncrnas.txt | \
-#	sort| uniq > $OUT_DIR/monoexonic_filter/conservative_lncrna_list.txt
-
-
-#grep -wFf \
-#	$OUT_DIR/monoexonic_filter/conservative_lncrna_list.txt \
-#	$STR_GTF \
-#	> $OUT_DIR/conservative_lncrna.gtf
-
-
-## rerun classifer on final lncrna list
-#FEELnc_classifier.pl \
-#	-l $OUT_DIR/classification/FEELnc_conservative_classification.log \
-#	-i $OUT_DIR/conservative_lncrna.gtf \
-#	-a $REF_GTF \
-#	> $OUT_DIR/classification/tmp_conservative_classification.txt
-
-
-# Create the header
-#header=$(head -1 "$OUT_DIR/classification/tmp_conservative_classification.txt")
-
-# Append the new column name to the header
-#echo -e "${header}\tpartnerRNA_gene_name" > "$OUT_DIR/classification/conservative_classification.txt"
-
-#awk 'BEGIN { FS = OFS = "\t" } 
-#    FNR==NR { gene_name_map[$1] = $2; next } 
-#    FNR==1 { next }  # Skip the header line of the second file
-#    { gene_id = $4; gene_name = (gene_id in gene_name_map) ? gene_name_map[gene_id] : "NA"; print $0, gene_name }' \
-#	$GENE_ID_NAME $OUT_DIR/classification/tmp_conservative_classification.txt \
-#	>> $OUT_DIR/classification/conservative_classification.txt
-
-#rm $OUT_DIR/classification/tmp_conservative_classification.txt

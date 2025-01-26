@@ -1,9 +1,5 @@
 #!/usr/bin/env bash
-#### blast against RFAM,SWISSPROT and MIRBASE with feelnc transcripts and
-#### transdecoder sequences
-#### inputs are: 1-3)output directories 4) evalue cutoff 5) transcript sequences
-#### 6) protein sequences 6) threads
-#### Written by NIBRT: colin.clarke@nibrt.ie 12-2019
+
 
 if (($# == 0)); then
         echo "Usage:"

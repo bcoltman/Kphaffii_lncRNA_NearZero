@@ -26,12 +26,8 @@ def import_gaps(gtf_file, biotype):
     gtf.columns = ['chr', 'source', 'feature', 'start', 'end', 'score', 'strand', 'frame', 'attribute']
     gtf.chr = gtf.chr.apply(lambda x: rename_dict[x])
     #Extracting relevant info from attributes
-    #gtf['transcript_id'] = gtf['attribute'].str.extract('transcript_id "([^"]+)"')
-    #gtf['gene_id'] = gtf['attribute'].str.extract('gene_id "([^"]+)"')
     gtf['biotype'] = biotype
     gtf.set_index("chr",inplace=True)
-    # Filter for only transcripts 
-    #gtf = gtf[gtf['feature'] == 'transcript']
     return gtf
 
 
@@ -51,22 +47,9 @@ def plot_gtf_transcripts(gtf_df, chrom_size_file, gaps_df, name, outdir):
         x, y = ax.collections[i].get_offsets().T
         ymin = y.min()
         ymax = y.max()
-        #print(ylab.get_text())
-        #if ylab.get_text() in gaps_df.index:
-            #chr_gaps = gaps_df.loc[[ylab.get_text()],:]
-            #for j, gap in chr_gaps.iterrows():
-                #ax.add_patch(plt.Rectangle((gap["start"], ymin), gap["end"] - gap["start"],ymax-ymin, facecolor="green",lw=5, edgecolor="green"))
-#	ax.vlines(x=gaps_df.loc[ylab.get_text(), "start"], ymin=ymin, ymax=ymax, colors="black", linestyles="--")
         ax.vlines(x=chrom_sizes[ylab.get_text()], ymin=ymin, ymax=ymax, colors="black", linestyles="--")
-        #, row in chrom_sizes.iterrows():
-        #if row['chr'] in gtf_df['chr'].values:
-          #  ax.axvline(x=row['size'], color='black', linestyle='--')
-    #ax.set_ylabel('Chromosome', fontsize=15)
-    #ax.set_xlabel('Start Coordinate', fontsize=15)
     ax.set_ylabel('', fontsize=15)
     ax.set_xlabel('', fontsize=15)
-    #ax.set_title('Swarm plot of transcripts by chromosome', fontsize=15)
-    #ax.ticklabel_format(axis="x", style="scientific")
     ax.tick_params(labelsize=15, labelbottom=False, bottom=False) #, 
     ax.legend(fontsize=20, markerscale=3, frameon=False, bbox_to_anchor=(0.97, 0.97), loc="upper right")
     for i in ['left', 'top', 'right', 'bottom']:
@@ -91,14 +74,9 @@ def plot_gtf_transcripts_vertical(gtf_df, chrom_size_file, gaps_df, name, outdir
         x, y = ax.collections[i].get_offsets().T
         ymin = x.min()
         ymax = x.max()
-        #print(ylab.get_text())
         if ylab.get_text() in gaps_df.index:
             chr_gaps = gaps_df.loc[[ylab.get_text()],:]
-            #for j, gap in chr_gaps.iterrows():
-                #ax.add_patch(plt.Rectangle((ymin, gap["start"]), ymax-ymin, gap["end"] - gap["start"], facecolor="green",lw=5, edgecolor="green"))
-
         ax.hlines(y=chrom_sizes[ylab.get_text()], xmin=ymin, xmax=ymax, colors="black", linestyles="--")
-       
     ax.set_ylabel('', fontsize=15)
     ax.set_xlabel('', fontsize=15)
    

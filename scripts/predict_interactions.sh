@@ -13,7 +13,6 @@
 ####   -p: GTF file with coding gene annotations
 
 
-
 if (($# == 0)); then
         echo "Usage:"
         echo "-l = lncRNA fasta"

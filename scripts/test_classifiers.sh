@@ -100,12 +100,6 @@ $LNC_DIR/RNAsamba/partial_length_weights.hdf5
 ## Train new model with integrated data from CPPpred and then classify
 cp data/integrated.hdf5 $LNC_DIR/RNAsamba/integrated.hdf5
 
-#rnasamba train \
-#-v 2 -s 3 \
-#$LNC_DIR/RNAsamba/integrated.hdf5 \
-#$LNC_DIR/data_fasta/Integrated_coding_RNA_test.fa \
-#$LNC_DIR/data_fasta/Integrated_ncRNA_test.fa
-
 rnasamba classify \
 -v 1 \
 $LNC_DIR/test_classifiers/RNAsamba_coding_integrated.tsv \
@@ -129,12 +123,6 @@ echo $shuffle_coding
 echo $shuffle_noncoding
 
 cp data/pichia_shuffle_nc.hdf5 $LNC_DIR/RNAsamba/pichia_shuffle_nc.hdf5
-#rnasamba train \
-#-v 2 -s 3 \
-#$LNC_DIR/RNAsamba/pichia_shuffle_nc.hdf5 \
-#$shuffle_coding \
-#$shuffle_noncoding
-
 
 rnasamba classify \
 -v 1 \
