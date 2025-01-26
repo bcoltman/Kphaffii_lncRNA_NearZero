@@ -2,6 +2,8 @@
 
 This repository contains the code for reproducing our analysis. Our most recent Zenodo DOI for the code used for our analysis is: 
 
+[![DOI](https://zenodo.org/badge/893538584.svg)](https://doi.org/10.5281/zenodo.14743249)
+
 ## Accessing presented data and results
 
 We have generated a seperate Zenodo submission for the data and results generated using the above scripts. Not all data and results were uploaded due to either size constraints, redundancy, or the data being publicly available elsewhere. The data, and further details, can be accessed at the following DOI:
@@ -13,7 +15,7 @@ We have generated a seperate Zenodo submission for the data and results generate
 
 ## Downloading and reproducing results
 
-The results presented in Coltman, 2025 can be reproduced by cloning this repository, defining a conda environment and executing the included scripts. Raw data required for running these scripts is either made avilable for download in [data](data) or is downloaded by the scripts. The version numbers of used prgrammes can be found in [versions_used.txt](versions_used.txt). The version numbers of python packages can be found in [requirements.txt](requirements.txt). The version numbers of R libraries can be found in [sessionInfo.txt](sessionInfo.txt).
+The results presented in Coltman, 2025 can be reproduced by cloning this repository, defining a conda environment and executing the included scripts. Raw data required for running these scripts is either made available for download in [data](data) or is downloaded by the scripts. The version numbers of used programmes can be found in [versions_used.txt](versions_used.txt). The version numbers of python packages can be found in [requirements.txt](requirements.txt). The version numbers of R libraries can be found in [sessionInfo.txt](sessionInfo.txt).
 
 ## Work notebook for project:
 
