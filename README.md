@@ -1,10 +1,10 @@
-# Identification of lncRNAs in _Komagataella phaffii_ and their responses to extremely slow growth rates. 
+# Identification and functional analysis of growth rate associated lncRNAs in _Komagataella phaffii_, Coltman _et_al_, 2025
 
-## This repository contains the code for analysis of:
-## Growth-rate associated expression levels of long non-coding RNAs in extremely slow growing _Komagataella phaffii_, Coltman _et_al_, 2025
+This repository contains the code for reproducing our analysis. Our most recent Zenodo DOI for the code used for our analysis is: 
 
-## DOI
-Our most recent Zenodo DOI generated for the journal submission is: 
+## Accessing presented data and results
+
+We have generated a seperate Zenodo submission for the data and results generated using the above scripts. Not all data and results were uploaded due to either size constraints, redundancy, or the data being publicly available elsewhere. The data, and further details, can be accessed at the following DOI:
 
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.14742669.svg)](https://doi.org/10.5281/zenodo.14742669)
 
