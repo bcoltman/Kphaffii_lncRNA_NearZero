@@ -108,7 +108,7 @@ sort -u -k1,1 -k2,2n \
 	$OUTDIR/triplexes/triplexator_interactions.bed \
 	> $OUTDIR/triplexes/triplexator_interactions_sort.bed
 
-mergeBed -i $OUTDIR/triplexes/triplexator_interactions_sort.bed \
+bedtools merge -i $OUTDIR/triplexes/triplexator_interactions_sort.bed \
 	-c 4 \
 	-o distinct,count \
 	> $OUTDIR/triplexes/triplexator_interactions_sort_merge.bed
