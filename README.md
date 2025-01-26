@@ -13,7 +13,7 @@ Our most recent Zenodo DOI generated for the journal submission is:
 
 ## Downloading and reproducing results
 
-The results presented in Coltman, 2025 can be reproduced by cloning this repository, defining a conda environment and executing the included scripts. Raw data required for running these scripts is either made avilable for download in [data](data) or is downloaded by the scripts. The programmes and the versions used can be found in [requirements.txt](requirements.txt).
+The results presented in Coltman, 2025 can be reproduced by cloning this repository, defining a conda environment and executing the included scripts. Raw data required for running these scripts is either made avilable for download in [data](data) or is downloaded by the scripts. The version numbers of used prgrammes can be found in [versions_used.txt](versions_used.txt). The version numbers of python packages can be found in [requirements.txt](requirements.txt). The version numbers of R libraries can be found in [sessionInfo.txt](sessionInfo.txt).
 
 ## Work notebook for project:
 
