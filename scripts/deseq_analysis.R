@@ -40,10 +40,25 @@ gtf <- args[5]
 de_dir <- args[6]
 tpm <- args[7]
 annotation_info <- args[8]
-interacting_pairs <- args[9]
-neighbouring_pairs <- args[10]
-func_dir <- args[11]
-
+interacting_pairs_promoter <- args[9]
+interacting_pairs_exon <- args[10]
+interacting_pairs_all <- args[11]
+neighbouring_pairs <- args[12]
+func_dir <- args[13]
+#
+#quant_dir <- "data/retentostat/salmon/quant/"
+#sample_info_file <- "data/retentostat_sample_information.tsv"
+#lncrna_classification <-"lncrna_annotation/classification/simple_classification.txt"
+#lncrna_list <-"lncrna_annotation/monoexonic_filter/first_lncrna_list.txt"
+#gtf <-"transcriptome_assembly/stringtie.all.transcripts.gtf"
+#de_dir <-"differential_expression/retentostat"
+#tpm <-"lncrna_annotation/TPM/TPM_ISAER.tsv"
+#annotation_info <-"data/kphaffi_annotation_info.tsv"
+#interacting_pairs_promoter <-"functional_predictions/triplexes/interacting_pairs_promoter.txt"
+#interacting_pairs_exon <-"functional_predictions/triplexes/interacting_pairs_exon.txt"
+#interacting_pairs_all <-"functional_predictions/triplexes/interacting_pairs_all.txt"
+#neighbouring_pairs <-"functional_predictions/nearby/nearby_genes.txt"
+#func_dir <-"functional_predictions"
 
 dir.create(file.path(de_dir, "/heatmaps"),recursive=TRUE)
 
@@ -645,15 +660,27 @@ nonlc_zscore_matrix <- t(scale(t(dds_rld_mat)))
 nonlc_zscore_matrix <- na.omit(nonlc_zscore_matrix)
 
 
-triplex_pairs <- read.table(interacting_pairs)
-colnames(triplex_pairs) <- c("Source", "Target")
+triplex_pairs_prom <- read.table(interacting_pairs_promoter)
+colnames(triplex_pairs_prom) <- c("Source", "Target")
+
+triplex_pairs_exon <- read.table(interacting_pairs_exon)
+colnames(triplex_pairs_exon) <- c("Source", "Target")
+
+triplex_pairs_all <- read.table(interacting_pairs_all)
+colnames(triplex_pairs_all) <- c("Source", "Target")
 
 neighbour_pairs <- read.table(neighbouring_pairs)
 colnames(neighbour_pairs) <- c("Source", "Target")
 
 
 # Not all Source and Target present due to overlap issues (~250 out of 7500)
-triplex_pairs <- triplex_pairs[(triplex_pairs$Source %in% rownames(nonlc_zscore_matrix))&(triplex_pairs$Target %in% rownames(nonlc_zscore_matrix)),]
+triplex_pairs_all <- triplex_pairs_all[(triplex_pairs_all$Source %in% rownames(nonlc_zscore_matrix))&(triplex_pairs_all$Target %in% rownames(nonlc_zscore_matrix)),]
+
+# Not all Source and Target present due to overlap issues (~250 out of 7500)
+triplex_pairs_prom <- triplex_pairs_prom[(triplex_pairs_prom$Source %in% rownames(nonlc_zscore_matrix))&(triplex_pairs_prom$Target %in% rownames(nonlc_zscore_matrix)),]
+
+# Not all Source and Target present due to overlap issues (~250 out of 7500)
+triplex_pairs_exon <- triplex_pairs_exon[(triplex_pairs_exon$Source %in% rownames(nonlc_zscore_matrix))&(triplex_pairs_exon$Target %in% rownames(nonlc_zscore_matrix)),]
 
 # Not all Source and Target present due to overlap issues (~250 out of 7500)
 neighbour_pairs <- neighbour_pairs[(neighbour_pairs$Source %in% rownames(nonlc_zscore_matrix))&(neighbour_pairs$Target %in% rownames(nonlc_zscore_matrix)),]
@@ -673,12 +700,35 @@ b_ha = HeatmapAnnotation(df = bottom_df, col = ann_col, annotation_legend_param 
 
 
 ## Plot heatmaps
-paired_znorm <- cbind(nonlc_zscore_matrix[triplex_pairs$Source,],nonlc_zscore_matrix[triplex_pairs$Target,])
+paired_znorm <- cbind(nonlc_zscore_matrix[triplex_pairs_all$Source,],nonlc_zscore_matrix[triplex_pairs_all$Target,])
 
-png(width=20,height=20,units="cm",res=400, filename=paste0(func_dir, "/triplexes/NonLC_TriplexZScoreCorrelation.png"))
+png(width=20,height=20,units="cm",res=400, filename=paste0(func_dir, "/triplexes/NonLC_TriplexAllZScoreCorrelation.png"))
 ht <- Heatmap(as.matrix(paired_znorm), top_annotation = t_ha, bottom_annotation = b_ha, cluster_rows = TRUE, show_row_dend = FALSE, cluster_columns = FALSE, col = cm.colors(256), show_row_names = FALSE, name = "z-score", column_title="Correlation of expression levels for lncRNA and gene pairs")
 ComplexHeatmap::draw(ht)
 dev.off()
+
+
+## Plot heatmaps
+paired_znorm <- cbind(nonlc_zscore_matrix[triplex_pairs_prom$Source,],nonlc_zscore_matrix[triplex_pairs_prom$Target,])
+
+png(width=20,height=20,units="cm",res=400, filename=paste0(func_dir, "/triplexes/NonLC_TriplexPromZScoreCorrelation.png"))
+ht <- Heatmap(as.matrix(paired_znorm), top_annotation = t_ha, bottom_annotation = b_ha, cluster_rows = TRUE, show_row_dend = FALSE, cluster_columns = FALSE, col = cm.colors(256), show_row_names = FALSE, name = "z-score", column_title="Correlation of expression levels for lncRNA and gene pairs")
+ComplexHeatmap::draw(ht)
+dev.off()
+
+
+## Plot heatmaps
+paired_znorm <- cbind(nonlc_zscore_matrix[triplex_pairs_exon$Source,],nonlc_zscore_matrix[triplex_pairs_exon$Target,])
+
+png(width=20,height=20,units="cm",res=400, filename=paste0(func_dir, "/triplexes/NonLC_TriplexExonZScoreCorrelation.png"))
+ht <- Heatmap(as.matrix(paired_znorm), top_annotation = t_ha, bottom_annotation = b_ha, cluster_rows = TRUE, show_row_dend = FALSE, cluster_columns = FALSE, col = cm.colors(256), show_row_names = FALSE, name = "z-score", column_title="Correlation of expression levels for lncRNA and gene pairs")
+ComplexHeatmap::draw(ht)
+dev.off()
+
+
+
+
+
 
 paired_znorm <- cbind(nonlc_zscore_matrix[neighbour_pairs$Source,],nonlc_zscore_matrix[neighbour_pairs$Target,])
 
@@ -721,25 +771,34 @@ all_expanded <- all %>%
   filter(Source != Target)
 
 # Generate interacting and neighboring data
-interacting <- merge(all_expanded, triplex_pairs, by = c("Source", "Target")) %>% filter(Source != Target)
+interacting_all <- merge(all_expanded, triplex_pairs_all, by = c("Source", "Target")) %>% filter(Source != Target)
+
+interacting_prom <- merge(all_expanded, triplex_pairs_prom, by = c("Source", "Target")) %>% filter(Source != Target)
+
+interacting_exon <- merge(all_expanded, triplex_pairs_exon, by = c("Source", "Target")) %>% filter(Source != Target)
+
+
 neighbours <- merge(all_expanded, neighbour_pairs, by = c("Source", "Target")) %>% filter(Source != Target)
 
 # Identify independent entries in 'all_expanded' that are not in 'neighbours' or 'interacting'
 independent <- all_expanded %>%
-  anti_join(interacting, by = c("Source", "Target")) %>%
+  anti_join(interacting_prom, by = c("Source", "Target")) %>%
   anti_join(neighbours, by = c("Source", "Target"))
 
-# Identify independent entries in 'all_expanded' that are not in 'neighbours' or 'interacting'
-#independent <- all_expanded %>%
-#  filter(!Source %in% neighbours$Source & !Source %in% interacting$Source)
+# anti_join(interacting_all, by = c("Source", "Target")) %>%
+
+
   
 # Combine all data types, including the new 'Independent' category
 all_neighbour_interacting <- rbind(
   #data.frame(all_expanded, Type = "All"),
   data.frame(neighbours, Type = "Neighbouring"),
-  data.frame(interacting, Type = "Interacting"),
+  data.frame(interacting_prom, Type = "Interacting - Promoter"),
   data.frame(independent, Type = "Independent")
 )
+#data.frame(interacting_all, Type = "Interacting"),
+# data.frame(interacting_exon, Type = "InteractingExon"),
+
 
 # Plot density distributions for All, Neighbouring, and Interacting types
 png(file = paste0(func_dir, "/All_Neighbour_Interacting_DC.png"), units = 'cm', res = 450, width = 5 * 450 / 72, height = 5 * 450 / 72)
@@ -757,23 +816,6 @@ ggplot(all_neighbour_interacting, aes(x=cor, group = Type, col = Type)) +
 dev.off()
 
 #y=after_stat(density*n/nrow(all_neighbour_interacting))
-
-
-neighbour_de <- rbind(
-    data.frame(neighbours, Type = "Neighbours"),
-    data.frame(neighbours[neighbours$Source %in% DE_genes, ], Type = "lncRNA DE"),
-    data.frame(neighbours[!neighbours$Source %in% DE_genes, ], Type = "lncRNA NDE"))
-
-interacting_de <- rbind(
-    data.frame(interacting, Type = "Interacting"),
-    data.frame(interacting[interacting$Source %in% DE_genes, ], Type = "lncRNA DE"),
-    data.frame(interacting[!interacting$Source %in% DE_genes, ], Type = "lncRNA NDE"))
-
-independent_de <- rbind(
-    data.frame(independent, Type = "Independent"),
-    data.frame(independent[independent$Source %in% DE_genes, ], Type = "lncRNA DE"),
-    data.frame(independent[!independent$Source %in% DE_genes, ], Type = "lncRNA NDE"))
-
 
 # Density scaling and plotting for DE and NDE categories
 plot_scaled_density <- function(data, type_filter, file_name, title, colors) {
@@ -802,6 +844,13 @@ plot_scaled_density <- function(data, type_filter, file_name, title, colors) {
   dev.off()
 }
 
+
+
+neighbour_de <- rbind(
+    data.frame(neighbours, Type = "Neighbours"),
+    data.frame(neighbours[neighbours$Source %in% DE_genes, ], Type = "lncRNA DE"),
+    data.frame(neighbours[!neighbours$Source %in% DE_genes, ], Type = "lncRNA NDE"))
+
 # Plot Neighbor and Interacting DE/NDE densities
 plot_scaled_density(
   neighbour_de,
@@ -811,13 +860,52 @@ plot_scaled_density(
   colors = c("Neighbours" = "#619CFF", "lncRNA DE" = "darkorchid", "lncRNA NDE" = "darkorange")
 )
 
+
+interacting_gp_de <- rbind(
+    data.frame(interacting_all, Type = "Interacting - Gene + Promoter"),
+    data.frame(interacting_all[interacting_all$Source %in% DE_genes, ], Type = "lncRNA DE"),
+    data.frame(interacting_all[!interacting_all$Source %in% DE_genes, ], Type = "lncRNA NDE"))
+
 plot_scaled_density(
-  interacting_de,
-  "Interacting",
+  interacting_gp_de,
+  "Interacting - Gene + Promoter",
   file_name = paste0(func_dir, "/triplexes/Triplexes_Int_All_lncRNA_DE_NDE.png"),
   title = "Density distribution of correlation coefficients of \nlncRNAs and other genes",
-  colors = c("Interacting" = "#00BA38", "lncRNA DE" = "darkorchid", "lncRNA NDE" = "darkorange")
+  colors = c("Interacting - Gene + Promoter" = "#848384", "lncRNA DE" = "darkorchid", "lncRNA NDE" = "darkorange")
 )
+
+interacting_prom_de <- rbind(
+    data.frame(interacting_prom, Type = "Interacting - Promoter"),
+    data.frame(interacting_prom[interacting_prom$Source %in% DE_genes, ], Type = "lncRNA DE"),
+    data.frame(interacting_prom[!interacting_prom$Source %in% DE_genes, ], Type = "lncRNA NDE"))
+
+plot_scaled_density(
+  interacting_prom_de,
+  "Interacting - Promoter",
+  file_name = paste0(func_dir, "/triplexes/Triplexes_Int_Prom_lncRNA_DE_NDE.png"),
+  title = "Density distribution of correlation coefficients of \nlncRNAs and other genes",
+  colors = c("Interacting - Promoter" = "#00BA38", "lncRNA DE" = "darkorchid", "lncRNA NDE" = "darkorange")
+)
+
+
+interacting_exon_de <- rbind(
+    data.frame(interacting_exon, Type = "Interacting - Exon"),
+    data.frame(interacting_exon[interacting_exon$Source %in% DE_genes, ], Type = "lncRNA DE"),
+    data.frame(interacting_exon[!interacting_exon$Source %in% DE_genes, ], Type = "lncRNA NDE"))
+
+plot_scaled_density(
+  interacting_exon_de,
+  "Interacting - Exon",
+  file_name = paste0(func_dir, "/triplexes/Triplexes_Int_Exon_lncRNA_DE_NDE.png"),
+  title = "Density distribution of correlation coefficients of \nlncRNAs and other genes",
+  colors = c("Interacting - Exon" = "#41c5bb", "lncRNA DE" = "darkorchid", "lncRNA NDE" = "darkorange")
+)
+
+
+independent_de <- rbind(
+    data.frame(independent, Type = "Independent"),
+    data.frame(independent[independent$Source %in% DE_genes, ], Type = "lncRNA DE"),
+    data.frame(independent[!independent$Source %in% DE_genes, ], Type = "lncRNA NDE"))
 
 plot_scaled_density(
   independent_de,
@@ -826,6 +914,41 @@ plot_scaled_density(
   title = "Density distribution of correlation coefficients of \nlncRNAs and other genes",
   colors = c("Independent" = "#F8766D", "lncRNA DE" = "darkorchid", "lncRNA NDE" = "darkorange")
 )
+
+
+######
+
+
+
+interacting_overview <- rbind(
+	data.frame(interacting_all[interacting_all$Source %in% DE_genes, ], Type = "Interacting - Gene + Promoter"),
+	data.frame(interacting_exon[interacting_exon$Source %in% DE_genes, ], Type = "Interacting - Exon"),
+	data.frame(interacting_prom[interacting_prom$Source %in% DE_genes, ], Type = "Interacting - Promoter"))
+
+
+
+# Calculate scaling factor to align densities
+group1_density <- density(interacting_overview$cor[interacting_overview$Type == "Interacting - Gene + Promoter"])
+group2_density <- density(interacting_overview$cor[interacting_overview$Type == "Interacting - Promoter"])
+group3_density <- density(interacting_overview$cor[interacting_overview$Type == "Interacting - Exon"])
+scaling_factor <- sum(group1_density$y) / (sum(group2_density$y) + sum(group3_density$y))
+
+colors = c("Interacting - Gene + Promoter" = "#848384", "Interacting - Promoter" = "#00BA38", "Interacting - Exon" = "#41c5bb")
+
+# Generate plot
+png(file = paste0(func_dir, "/triplexes/Triplexes_Int_Overview_lncRNA_DE_NDE.png"), units = 'cm', res = 450, width = 5 * 450 / 72, height = 5 * 450 / 72)
+ggplot(interacting_overview, aes(cor, group = Type, col = Type)) +
+theme_classic(base_size = 25) +
+geom_density(data = subset(interacting_overview, Type == "Interacting - Gene + Promoter"), linewidth = 2, bounds = c(-1, 1)) +
+geom_density(data = subset(interacting_overview, Type == "Interacting - Promoter"), aes(y = after_stat(density * scaling_factor)), linewidth = 2, bounds = c(-1, 1)) +
+geom_density(data = subset(interacting_overview, Type == "Interacting - Exon"), aes(y = after_stat(density * scaling_factor)), linewidth = 2, bounds = c(-1, 1)) +
+coord_cartesian(xlim = c(-1, 1), expand = FALSE) + #ylim = c(0, 0.7), 
+guides(color = guide_legend(override.aes = list(size = 12))) +
+labs(y = "Density", x = "Correlation Coefficient") +
+theme(plot.title = element_text(hjust = 0.5)) +
+scale_color_manual(values = colors)
+dev.off()
+
 
 ###############################	
 # MFuzz clustering

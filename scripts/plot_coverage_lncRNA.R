@@ -143,7 +143,7 @@ plotCoverageKaryoploteR <- function(zoom_region, chromosome, output_file, custom
       data.panel = data.panel.plus,
       ymax = ymax
     )
-    kpAxis(kp, r0 = plus_r0, r1 = plus_r1, data.panel = data.panel.plus)
+    kpAxis(kp, r0 = plus_r0, r1 = plus_r1, data.panel = data.panel.plus)#, ymin=0, ymax=ymax)
     kpAddLabels(kp, labels = plus_label, pos = 1,
                 r0 = plus_r0, r1 = plus_r1, label.margin = 0.0725,
                 data.panel = data.panel.plus)
@@ -156,7 +156,7 @@ plotCoverageKaryoploteR <- function(zoom_region, chromosome, output_file, custom
       data.panel = data.panel.minus,
       ymax = ymax
     )
-    kpAxis(kp, r0 = minus_r0, r1 = minus_r1, data.panel = data.panel.minus)
+    kpAxis(kp, r0 = minus_r0, r1 = minus_r1, data.panel = data.panel.minus)#, ymin=0, ymax=ymax)
     kpAddLabels(kp, labels = minus_label, pos = 1,
                 r0 = minus_r0, r1 = minus_r1, label.margin = 0.0725,
                 data.panel = data.panel.minus)
