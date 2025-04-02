@@ -2,13 +2,13 @@
 
 This repository contains the code for reproducing our analysis. Our most recent Zenodo DOI for the code used for our analysis is: 
 
-[![DOI](https://zenodo.org/badge/893538584.svg)](https://doi.org/10.5281/zenodo.14743249)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.14743249.svg)](https://doi.org/10.5281/zenodo.14743249)
 
 ## Accessing presented data and results
 
 We have generated a seperate Zenodo submission for the data and results generated using the above scripts. Not all data and results were uploaded due to either size constraints, redundancy, or the data being publicly available elsewhere. The data, and further details, can be accessed at the following DOI:
 
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.14742669.svg)](https://doi.org/10.5281/zenodo.14742669)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.15126316.svg)](https://doi.org/10.5281/zenodo.15126316)
 
 ## Contact
 - benjamin.coltman@univie.ac.at
@@ -428,24 +428,34 @@ gffread transcriptome_assembly/stringtie.all.transcripts.gtf \
 
 #### b. Combine original annotation with filtered lncRNA annotations
 ```bash
+
+gffread --force-exons \
+	--sort-alpha \
+	--keep-genes \
+	lncrna_annotation/firstpass_filter/all_lncrna.gtf \
+	-o lncrna_annotation/all_lncrna.gff3
+
+gffread -T --force-exons \
+	--sort-alpha \
+	--keep-genes \
+	lncrna_annotation/firstpass_filter/all_lncrna.gtf \
+	-o lncrna_annotation/all_lncrna.gtf
+
 gffread reference_genome/cbs7435.gff3 \
 	--force-exons \
 	--sort-alpha \
-	--keep-genes \
-	-T \
-	-o reference_genome/cbs7435_updated.gtf
-awk 1 reference_genome/cbs7435_updated.gtf \
-	lncrna_annotation/firstpass_filter/all_lncrna.gtf \
-	| gffread --force-exons \
+	--keep-genes | \
+	cat lncrna_annotation/all_lncrna.gff3 - | \
+	gffread - \
+	--force-exons \
 	--sort-alpha \
 	--keep-genes \
-	-T \
-	-o reference_genome/cbs7435_updated.gtf
-gffread lncrna_annotation/firstpass_filter/all_lncrna.gtf \
-	-w lncrna_annotation/lncrna_sequences.fa \
-	-g reference_genome/cbs7435_combined.fa
-```
+	-o reference_genome/cbs7435_updated.gff3
 
+gffread lncrna_annotation/all_lncrna.gff3 \
+	-g reference_genome/cbs7435_combined.fa \
+	-w lncrna_annotation/lncrna_sequences.fa	
+```
 
 #### c. Plot characteristics and details about lncRNAs, other genes etc.
 ```bash
@@ -473,16 +483,14 @@ mkdir lncrna_annotation/plots
 #### d. Determine pairs of lncRNA and genes that interact via triplexes or are within ~1kb of each other
 ```bash
 mkdir -p functional_predictions
-./scripts/predict_interactions.sh \
+./scripts/triplex_annotation.sh \
 	-l lncrna_annotation/lncrna_sequences.fa \
-	-f cbs7435_combined.fa \
-	-g reference_genome/cbs7435_updated.gtf \
+	-f reference_genome/cbs7435_combined.fa \
+	-g reference_genome/cbs7435_updated.gff3 \
 	-s transcriptome_assembly/stringtie.all.transcripts.gtf \
-	-r reference_genome/retentostat \
 	-o functional_predictions \
-	-k lncrna_annotation/firstpass_filter/all_lncrna.gtf \
-	-c cbs7435chromSizes.txt \
-	-p reference_genome/retentostat/protein.coding.genes.txt
+	-k lncrna_annotation/all_lncrna.gff3 \
+	-c reference_genome/cbs7435chromSizes.txt
 ```
 
 #### e. Investigate enrichment of annotated functions (KEGG or GO) of coding genes predicted to interact with lncRNAs via triplexes
@@ -500,8 +508,8 @@ wget --quiet -nc \
 ##### ii. Perform enrichment analysis
 ```bash
 Rscript ./scripts/triplex_enrichment.R \
-	functional_predictions/triplexes/interacting_pairs_coding.txt \
-	functional_predictions/triplexes/pair_enrichment.xlsx
+	functional_predictions/triplexes/interacting_pairs_coding_promoter.txt \
+	functional_predictions/triplexes/interacting_pairs_coding_promoter_enrichment.xlsx
 ```
 
 ### 7. Assess growth-rate dependent expression of lncRNAs
@@ -517,10 +525,13 @@ Rscript ./scripts/deseq_analysis.R \
 	"differential_expression/retentostat" \
 	"lncrna_annotation/TPM/TPM_ISAER.tsv" \
 	"data/kphaffi_annotation_info.tsv" \
-	"functional_predictions/triplexes/interacting_pairs_coding.txt" \
-	"functional_predictions/nearby/nearby_genes.txt" \
+	"functional_predictions/triplexes/interacting_pairs_coding_promoter.txt" \
+	"functional_predictions/triplexes/interacting_pairs_coding_exon.txt" \
+	"functional_predictions/triplexes/interacting_pairs_coding_all.txt" \
+	"functional_predictions/nearby/nearby_genes_coding.txt" \
 	"functional_predictions"
 ```
+
 
 ### 8. Plot coverage plots of lncRNA
 ##### Split aligned reads by strand - indexing BAMs too
