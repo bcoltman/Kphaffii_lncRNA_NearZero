@@ -809,7 +809,11 @@ ggplot(all_neighbour_interacting, aes(x=cor, group = Type, col = Type)) +
     #title = "Density distribution of correlation coefficients of \nlncRNAs and other genes",
     y = "Density", x = "Correlation Coefficient"
   ) +
-  theme(plot.title = element_text(hjust = 0.5)) +
+  theme(plot.title = element_text(hjust = 0.5), 
+      legend.position = c(0.5, 0.0),
+      legend.background = element_rect(fill = "transparent", colour = NA),
+      legend.box.background = element_rect(fill = "transparent", colour = NA),
+      legend.justification = c(0.5, 0)) +
   scale_color_manual(values = c("Independent" = "#F8766D", "Neighbouring" = "#619CFF", "Interacting - Promoter" = "#00BA38"))
 dev.off()
 
@@ -836,7 +840,11 @@ plot_scaled_density <- function(data, type_filter, file_name, title, colors) {
       #title = title,
       y = "Density", x = "Correlation Coefficient"
     ) +
-    theme(plot.title = element_text(hjust = 0.5)) +
+    theme(plot.title = element_text(hjust = 0.5), 
+      legend.position = c(0.5, 0.0),
+      legend.background = element_rect(fill = "transparent", colour = NA),
+      legend.box.background = element_rect(fill = "transparent", colour = NA),
+      legend.justification = c(0.5, 0)) +
     scale_color_manual(values = colors)
   print(i)
   dev.off()
@@ -943,7 +951,11 @@ geom_density(data = subset(interacting_overview, Type == "Interacting - Exon"), 
 coord_cartesian(xlim = c(-1, 1), expand = FALSE) + #ylim = c(0, 0.7), 
 guides(color = guide_legend(override.aes = list(size = 12))) +
 labs(y = "Density", x = "Correlation Coefficient") +
-theme(plot.title = element_text(hjust = 0.5)) +
+theme(plot.title = element_text(hjust = 0.5), 
+      legend.position = c(0.5, 0.0),
+      legend.background = element_rect(fill = "transparent", colour = NA),
+      legend.box.background = element_rect(fill = "transparent", colour = NA),
+      legend.justification = c(0.5, 0)) +
 scale_color_manual(values = colors)
 dev.off()
 
