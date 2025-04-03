@@ -341,7 +341,7 @@ VisualizeLine <- function(dataset,
             aes(group = cluster, x = variable, y = mean_value),color = "black") +
   scale_color_manual(values = coloursBarPlot) +
   labs(x = "Samples", y = "Expression (log counts)")+
-  theme_minimal() + facet_wrap(~ cluster, ncol = 5) + 
+  theme_minimal() + facet_wrap(~ cluster, ncol = 4) + 
   theme(legend.position="none",axis.text = element_text(size = 20),axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1),strip.text = element_text(size=20),
         axis.title=element_text(size=20,face="bold"))
    
@@ -796,8 +796,6 @@ all_neighbour_interacting <- rbind(
   data.frame(interacting_prom, Type = "Interacting - Promoter"),
   data.frame(independent, Type = "Independent")
 )
-#data.frame(interacting_all, Type = "Interacting"),
-# data.frame(interacting_exon, Type = "InteractingExon"),
 
 
 # Plot density distributions for All, Neighbouring, and Interacting types
@@ -812,7 +810,7 @@ ggplot(all_neighbour_interacting, aes(x=cor, group = Type, col = Type)) +
     y = "Density", x = "Correlation Coefficient"
   ) +
   theme(plot.title = element_text(hjust = 0.5)) +
-  scale_color_manual(values = c("Independent" = "#F8766D", "Neighbouring" = "#619CFF", "Interacting" = "#00BA38"))
+  scale_color_manual(values = c("Independent" = "#F8766D", "Neighbouring" = "#619CFF", "Interacting - Promoter" = "#00BA38"))
 dev.off()
 
 #y=after_stat(density*n/nrow(all_neighbour_interacting))
@@ -1082,6 +1080,17 @@ mplnResults <- mplnVariational(dataset=counts_median_matrix,
 				normalize="Yes")
 save(mplnResults, file=paste0(func_dir, "/clustering/mpln/sig_mplnResults.RData"))
 
+
+
+
+########################
+# Process MPLN Clust results
+#########################
+
+# Can load the earlier run!
+#load(file=paste0(func_dir, "/clustering/mpln/sig_mplnResults.RData"))
+
+
 png(file=paste0(func_dir, "/clustering/mpln/significant_loglikelihood.png"), width=800, height=600)
 par(mfrow = c(1, 2))
 graphics::matplot(mplnResults$logLikelihood, xlab = "Run",
@@ -1098,14 +1107,6 @@ legend("top", inset = c(- 0.4, 0), legend = c("BIC", "ICL", "AIC", "AIC3"),
 dev.off()
 
 print(summary(warnings()))
-
-
-########################
-# Process MPLN Clust results
-#########################
-
-# Can load the earlier ran!
-#load(file=paste0(func_dir, "clustering/mpln/sig_mplnResults.RData"))
 
 opt_clusters <- 7
 
