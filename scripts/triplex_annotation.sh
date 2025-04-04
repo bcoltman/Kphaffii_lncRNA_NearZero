@@ -173,12 +173,12 @@ awk -F'\t' '$4 != $10 { print $4, $10 }' "$OUTDIR/nearby/nearby_coding.bed" \
 # Step B: Run Triplexator and format output
 #############################################
 
-triplexator -l 20 -e 20 -c 2 -g 20 -mf \
-    -fr on -mrl 7 -mrp 3 -rm 2 -p 32 \
-    -ds "$G_FA" \
-    -ss "$LNC_FA" \
-    -od "$OUTDIR/triplexes" \
-    -o triplexator_result.txt
+#triplexator -l 20 -e 20 -c 2 -g 20 -mf \
+#    -fr on -mrl 7 -mrp 3 -rm 2 -p 32 \
+#    -ds "$G_FA" \
+#    -ss "$LNC_FA" \
+#    -od "$OUTDIR/triplexes" \
+#    -o triplexator_result.txt
 
 sort -k1,1 -k2,2n \
 	$OUTDIR/triplexes/triplexator_result.txt \
@@ -334,13 +334,19 @@ rm "$OUTDIR/triplexes/tts_not_promoter_exon_intron.bed" \
 	"$OUTDIR/bed/exclusive_exon.bed" \
 	"$OUTDIR/bed/exclusive_intron.bed" \
 	"$OUTDIR/bed/exclusive_intergenic.bed"
+
+# Count unique TTSs based on chromosome/start/end
+num_tts_promoter=$(cut -f1-3 "$OUTDIR/triplexes/tts_coding_promoter_exclusive.bed" | sort -u | wc -l)
+num_tts_exon=$(cut -f1-3 "$OUTDIR/triplexes/tts_exon_exclusive.bed" | sort -u | wc -l)
+num_tts_intron=$(cut -f1-3 "$OUTDIR/triplexes/tts_intron_exclusive.bed" | sort -u | wc -l)
+num_tts_intergenic=$(cut -f1-3 "$OUTDIR/triplexes/tts_intergenic_exclusive.bed" | sort -u | wc -l)
 	
 
 # Count the number of TTS regions in each exclusive category.
-num_tts_promoter=$(wc -l < "$OUTDIR/triplexes/tts_coding_promoter_exclusive.bed")
-num_tts_exon=$(wc -l < "$OUTDIR/triplexes/tts_exon_exclusive.bed")
-num_tts_intron=$(wc -l < "$OUTDIR/triplexes/tts_intron_exclusive.bed")
-num_tts_intergenic=$(wc -l < "$OUTDIR/triplexes/tts_intergenic_exclusive.bed")
+#num_tts_promoter=$(wc -l < "$OUTDIR/triplexes/tts_coding_promoter_exclusive.bed")
+#num_tts_exon=$(wc -l < "$OUTDIR/triplexes/tts_exon_exclusive.bed")
+#num_tts_intron=$(wc -l < "$OUTDIR/triplexes/tts_intron_exclusive.bed")
+#num_tts_intergenic=$(wc -l < "$OUTDIR/triplexes/tts_intergenic_exclusive.bed")
 
 num_promoter=$(cut -f10 "$OUTDIR/triplexes/tts_coding_promoter_exclusive.bed" | sort -u | wc -l)
 num_exon=$(cut -f10 "$OUTDIR/triplexes/tts_exon_exclusive.bed" | sort -u | wc -l)
