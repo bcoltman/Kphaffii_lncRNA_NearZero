@@ -8,7 +8,7 @@ This repository contains the code for reproducing our analysis. Our most recent 
 
 We have generated a seperate Zenodo submission for the data and results generated using the above scripts. Not all data and results were uploaded due to either size constraints, redundancy, or the data being publicly available elsewhere. The data, and further details, can be accessed at the following DOI:
 
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.15126316.svg)](https://doi.org/10.5281/zenodo.15126316)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.15148207.svg)](https://doi.org/10.5281/zenodo.15148207)
 
 ## Contact
 - benjamin.coltman@univie.ac.at
